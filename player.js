@@ -1,170 +1,128 @@
 var isPlayed;
-var player = new Array();
+var players;
 var showing;
 var audios;
 
 $(document).ready(function(){
 	isPlayed = false;
-	player.push(document.getElementById('player0'));
-	player.push(document.getElementById('player1'));
-	player.push(document.getElementById('player2'));
+    
+    players = $('.player');	
+	audios = $('.audio');
 
-	audios = document.getElementsByClassName('audio-player');
-
-	player[0].style.display = 'block';
-	player[0].volume = 0;
-	for (var i = 1; i < player.length; i++){
-		if(document.getElementById("preview-checkbox").checked == false)player[i].style.display = 'none';
-		player[i].class = "col-lg-3";
-		player[i].volume = 0;
+	players.eq(0).css('display','block;');
+	players.eq(0).get(0).volume = 0;
+	for (var i = 1; i < players.length; i++){
+		if(!$("#preview-checkbox").is(':checked'))players.eq(i).css('display','none');
+		players.eq(i).addClass("col-lg-3");
+		players.eq(i).prop("volume",0);
 	}
 	showing = 0;
 
-	audios[0].volume = 1;
+	audios.eq(0).prop("volume",1);
 	for (var i = 1; i < audios.length; i++){
 		
-		audios[i].volume = 0;
+		audios.eq(i).prop("volume",0);
 	}
 
 	$("#Controls").css('position','absolute');
-	$("#Controls").css('top',($(mainPlayer).offset().top + $(player[showing]).height() - $("#Controls").height()) +'px');
-
-	$("#volume0").css('-webkit-appearance','slider-vertical');
-	$("#volume0").css('width','20px');
-	$("#volume0").css('height',$(player[showing]).height()/3 + "px");
-	$("#volume0").css('margin-top',2 * $(player[showing]).height()/3 + "px");
-	$("#volume1").css('-webkit-appearance','slider-vertical');
-	$("#volume1").css('width','20px');
-	$("#volume1").css('height',$(player[showing]).height()/3 + "px");
-	$("#volume1").css('margin-top',2 * $(player[showing]).height()/3 + "px");
+	$("#Controls").css('top',($(mainPlayer).offset().top + $(players.eq(showing)).height() - $("#Controls").height()) +'px');
+    
+    $(".volume").css('-webkit-appearance','slider-vertical');
+    $(".volume").css('width','20px');
+    $(".volume").css('height',$(players.eq(showing)).height()/3 + 'px');
+    $(".volume").css('margin-top',2 * $(players.eq(showing)).height()/3 +'px');
+    
+    
+    $(".player").on("click", function(event){
+        var id = $(this).attr("id").substr($(this).attr("id").length -1);
+        setView(id);
+        
+    });
 });
 
 function play_pause(){
 	if(isPlayed){
-		player[0].pause();
-		player[1].pause(); 
-		player[2].pause();
-		for (var i = 0; i < audios.length; i++) {
-			audios[i].pause();
-		}
+		for (i = 0; i < players.length; i++)players.eq(i).trigger("pause");
+		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("pause");
+        
 		isPlayed = false;
 	}
 	else {
-		player[0].play();
-		player[1].play();
-		player[2].play();
-		for (var i = 0; i < audios.length; i++) {
-			audios[i].play();
-		}
+		for (i = 0; i < players.length; i++)players.eq(i).trigger("play");
+		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("play");
+		
 		isPlayed = true;
 	}
 }
 
-function next(){
-	for (var i = 0; i < player.length; i++) {
-		player[i].className = "col-lg-3";
-		if(document.getElementById("preview-checkbox").checked == false)player[i].style.display = 'none';
+function change(next){
+	for (var i = 0; i < players.length; i++) {
+		players.eq(i).addClass("col-lg-3");
+		if(!$("#preview-checkbox").is(":checked"))players.eq(i).css('display','none');
 	}
 
-	showing = (showing + 1) % player.length;
+	showing = (showing + next) % players.length;
 
 
-	player[showing].className = "col-lg-12";
-	player[showing].style.display = 'block';
+	players.eq(showing).addClass('col-lg-12');
+	players.eq(showing).css('display','block');
 
 	$("#players").html('');
 
 	$("#players").append('<div id="mainPlayer">');
-	$("#players").append(player[showing]);
+	$("#players").append(players.eq(showing));
 	$("#players").append('</div>');
 
-	for (var i = 0; i < player.length; i++)
-		if(i !=showing)$("#players").append(player[i]);
+	for (var i = 0; i < players.length; i++)
+		if(i !=showing)$("#players").append(players.eq(i));
 
-	if(isPlayed){
-		player[0].play();
-		player[1].play();
-		player[2].play();
-	}
-}
-
-function previous(){
-	for (var i = 0; i < player.length; i++) {
-		player[i].className = "col-lg-3";
-		if(document.getElementById("preview-checkbox").checked == false)player[i].style.display = 'none';
-	}
-
-	showing = (showing - 1) % player.length;
-	if(showing < 0) showing += player.length;
-
-	player[showing].className = "col-lg-12";
-	player[showing].style.display = 'block';
-
-	$("#players").html('');
-
-	$("#players").append('<div id="mainPlayer">');
-	$("#players").append(player[showing]);
-	$("#players").append('</div>');
-
-	for (var i = 0; i < player.length; i++)
-		if(i !=showing)$("#players").append(player[i]);
-
-	if(isPlayed){
-		player[0].play();
-		player[1].play();
-		player[2].play();
-	}
+	play_pause();
 }
 
 function setView(index){
-	for (var i = 0; i < player.length; i++) {
-		player[i].className = "col-lg-3";
-		if(document.getElementById("preview-checkbox").checked == false)player[i].style.display = 'none';
+	for (var i = 0; i < players.length; i++) {
+		players.eq(i).addClass("col-lg-3");
+		if(!$("#preview-checkbox").is(":checked"))players.eq(i).css('display','none');
 	}
 
 	showing = index;
 
-	player[showing].className = "col-lg-12";
-	player[showing].style.display = 'block';
+	players.eq(showing).addClass("col-lg-12");
+	players.eq(showing).css("display:block");
 
 	$("#players").html('');
 
 	$("#players").append('<div id="mainPlayer">');
-	$("#players").append(player[showing]);
+	$("#players").append(players.eq(showing));
 	$("#players").append('</div>');
 
-	for (var i = 0; i < player.length; i++)
-		if(i !=showing)$("#players").append(player[i]);
+	for (var i = 0; i < players.length; i++)
+		if(i !=showing)$("#players").append(players.eq(i));
 
-	if(isPlayed){
-		player[0].play();
-		player[1].play();
-		player[2].play();
-	}
+	play_pause();
 }
 
 function togglePreview(){
-	console.log(document.getElementById("preview-checkbox").checked);
-	if(document.getElementById("preview-checkbox").checked)
+	console.log($("#preview-checkbox").is(":checked"));
+	if($("#preview-checkbox").is(":checked"))
 	{
-		for (var i = 0; i < player.length; i++) {
-			player[i].style.display = 'block';
+		for (var i = 0; i < players.length; i++) {
+			players.eq(i).css('display','block');
 		}
 	}
-
 	else
 	{
-		for (var i = 0; i < player.length; i++) {
-			player[i].style.display = 'none';
+		for (var i = 0; i < players.length; i++) {
+			players.eq(i).css('display','none');
 		}
 
-		player[showing].style.display = 'block';
+		players.eq(showing).css('display','block');
 
 	}
 }
 
 function updateAudio(){
 	console.log($("#volume0").val());
-	$(audios[0]).prop('volume',$("#volume0").val());
-	$(audios[1]).prop('volume',$("#volume1").val());
+	$(audios.eq(0).get(0)).prop('volume',$("#volume0").val());
+	$(audios.eq(1).get(0)).prop('volume',$("#volume1").val());
 }
