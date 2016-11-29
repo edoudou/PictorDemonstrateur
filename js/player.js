@@ -4,6 +4,7 @@ var showing;
 var audios;
 
 $(document).ready(function(){
+    
 	isPlayed = false;
     
     //Définition des ressources audios et vidéos
@@ -42,6 +43,30 @@ $(document).ready(function(){
         console.log(id);
         setView(id);
         
+    });
+    
+    $(document).keydown(function(event){
+        switch(event.which) {
+            //SpaceBar
+            case 32: play_pause();
+            break;
+            //Left  
+            case 37: change(-1);
+            break;
+
+            case 38: // up
+            break;
+                
+            //Right
+            case 39: change(1);
+            break;
+
+            case 40: // down
+            break;
+
+            default: console.log(event.which); // exit this handler for other keys
+        }
+        //event.preventDefault();
     });
 });
 
