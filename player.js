@@ -35,13 +35,15 @@ $(document).ready(function(){
     
     $(".player").on("click", function(event){
         var id = $(this).attr("id").substr($(this).attr("id").length -1);
+        console.log(id);
         setView(id);
         
     });
 });
 
-function play_pause(){
-	if(isPlayed){
+function play_pause(forced){
+    //console.log(forced);
+	if(isPlayed&&!forced){
 		for (i = 0; i < players.length; i++)players.eq(i).trigger("pause");
 		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("pause");
         
@@ -56,54 +58,44 @@ function play_pause(){
 }
 
 function change(next){
-	for (var i = 0; i < players.length; i++) {
-		players.eq(i).addClass("col-lg-3");
-		if(!$("#preview-checkbox").is(":checked"))players.eq(i).css('display','none');
-	}
+	
+	showing = (showing + next +players.length) % players.length;
+    setView(showing);
 
-	showing = (showing + next) % players.length;
-
-
-	players.eq(showing).addClass('col-lg-12');
-	players.eq(showing).css('display','block');
-
-	$("#players").html('');
-
-	$("#players").append('<div id="mainPlayer">');
-	$("#players").append(players.eq(showing));
-	$("#players").append('</div>');
-
-	for (var i = 0; i < players.length; i++)
-		if(i !=showing)$("#players").append(players.eq(i));
-
-	play_pause();
 }
 
 function setView(index){
 	for (var i = 0; i < players.length; i++) {
-		players.eq(i).addClass("col-lg-3");
+		players.eq(i).attr("class","player col-lg-3");
 		if(!$("#preview-checkbox").is(":checked"))players.eq(i).css('display','none');
 	}
 
 	showing = index;
 
-	players.eq(showing).addClass("col-lg-12");
-	players.eq(showing).css("display:block");
+	players.eq(showing).attr("class","player col-lg-12");
+	players.eq(showing).css("display","block");
 
 	$("#players").html('');
 
-	$("#players").append('<div id="mainPlayer">');
-	$("#players").append(players.eq(showing));
-	$("#players").append('</div>');
+	$("#players").append('<div id="mainPlayer"></div>');
+	$("#mainPlayer").append(players.eq(showing));
+	//$("#players").append('');
 
 	for (var i = 0; i < players.length; i++)
 		if(i !=showing)$("#players").append(players.eq(i));
+    
+    $(".player").on("click", function(event){
+        var id = $(this).attr("id").substr($(this).attr("id").length -1);
+        console.log(id);
+        setView(id);
+        
+    });
 
-	play_pause();
+	play_pause(true);
 }
 
 function togglePreview(){
-	console.log($("#preview-checkbox").is(":checked"));
+	//console.log($("#preview-checkbox").is(":checked"));
 	if($("#preview-checkbox").is(":checked"))
 	{
 		for (var i = 0; i < players.length; i++) {
@@ -122,7 +114,7 @@ function togglePreview(){
 }
 
 function updateAudio(){
-	console.log($("#volume0").val());
+	//console.log($("#volume0").val());
 	$(audios.eq(0).get(0)).prop('volume',$("#volume0").val());
 	$(audios.eq(1).get(0)).prop('volume',$("#volume1").val());
 }
