@@ -6,9 +6,11 @@ var audios;
 $(document).ready(function(){
 	isPlayed = false;
     
+    //Définition des ressources audios et vidéos
     players = $('.player');	
 	audios = $('.audio');
-
+    
+    //Initialisation de l'agencement des players et du volume des flux audios
 	players.eq(0).css('display','block;');
 	players.eq(0).get(0).volume = 0;
 	for (var i = 1; i < players.length; i++){
@@ -23,16 +25,18 @@ $(document).ready(function(){
 		
 		audios.eq(i).prop("volume",0);
 	}
-
+    
+    //Ajustement de la position des boutons
 	$("#Controls").css('position','absolute');
 	$("#Controls").css('top',($(mainPlayer).offset().top + $(players.eq(showing)).height() - $("#Controls").height()) +'px');
     
+    //Ajustement de l'affichage des barres de controle des volumes
     $(".volume").css('-webkit-appearance','slider-vertical');
     $(".volume").css('width','20px');
     $(".volume").css('height',$(players.eq(showing)).height()/3 + 'px');
     $(".volume").css('margin-top',2 * $(players.eq(showing)).height()/3 +'px');
     
-    
+    //Initialisation de l'event onClick sur les miniatures pour changer le flux en lecture principale
     $(".player").on("click", function(event){
         var id = $(this).attr("id").substr($(this).attr("id").length -1);
         console.log(id);
@@ -42,13 +46,15 @@ $(document).ready(function(){
 });
 
 function play_pause(forced){
-    //console.log(forced);
+    
+    //Mise en pause des lecteurs
 	if(isPlayed&&!forced){
 		for (i = 0; i < players.length; i++)players.eq(i).trigger("pause");
 		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("pause");
         
 		isPlayed = false;
 	}
+    //Mise en lecture des lecteurs
 	else {
 		for (i = 0; i < players.length; i++)players.eq(i).trigger("play");
 		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("play");
@@ -57,21 +63,26 @@ function play_pause(forced){
 	}
 }
 
+//Fonction de changement de flux vidéo par bouton < >
 function change(next){
 	
+    //Selection du player suivant à mettre en lecture principale
 	showing = (showing + next +players.length) % players.length;
+    //Appel de la fonction de changement de flux vidéo
     setView(showing);
-
 }
 
+//Fonction de réagencement des flux vidéos
 function setView(index){
+    //Réinitialisation des propriété css des lecteurs
 	for (var i = 0; i < players.length; i++) {
 		players.eq(i).attr("class","player col-lg-3");
 		if(!$("#preview-checkbox").is(":checked"))players.eq(i).css('display','none');
 	}
 
 	showing = index;
-
+    
+    //Mise en place du lecteur principal
 	players.eq(showing).attr("class","player col-lg-12");
 	players.eq(showing).css("display","block");
 
@@ -79,42 +90,36 @@ function setView(index){
 
 	$("#players").append('<div id="mainPlayer"></div>');
 	$("#mainPlayer").append(players.eq(showing));
-	//$("#players").append('');
 
+    //Mise en place des lecteurs miniatures
 	for (var i = 0; i < players.length; i++)
 		if(i !=showing)$("#players").append(players.eq(i));
     
+    //Réinitialisation de l'event onClick sur les miniatures
     $(".player").on("click", function(event){
         var id = $(this).attr("id").substr($(this).attr("id").length -1);
         console.log(id);
         setView(id);
-        
     });
 
+    //Réactivation de la lecture
 	play_pause(true);
 }
 
+//Fonction de toggle des miniatures
 function togglePreview(){
-	//console.log($("#preview-checkbox").is(":checked"));
-	if($("#preview-checkbox").is(":checked"))
-	{
-		for (var i = 0; i < players.length; i++) {
-			players.eq(i).css('display','block');
-		}
-	}
-	else
-	{
-		for (var i = 0; i < players.length; i++) {
-			players.eq(i).css('display','none');
-		}
-
-		players.eq(showing).css('display','block');
-
-	}
+    
+    //Si la checkbox est coché, affichage des miniatures
+	if($("#preview-checkbox").is(":checked"))for (var i = 0; i < players.length; i++)players.eq(i).css('display','block');
+    //Sinon, dissimulation par css
+	else for (var i = 0; i < players.length; i++)players.eq(i).css('display','none');
+		
+    players.eq(showing).css('display','block');	
 }
 
+//Fonction d'ajustage du volume des flux audio
 function updateAudio(){
-	//console.log($("#volume0").val());
+    
 	$(audios.eq(0).get(0)).prop('volume',$("#volume0").val());
 	$(audios.eq(1).get(0)).prop('volume',$("#volume1").val());
 }
