@@ -85,7 +85,6 @@ function setView(index){
     //Mise en place du lecteur principal
 	players.eq(showing).attr("class","player col-lg-12");
 	players.eq(showing).css("display","block");
-
 	$("#players").html('');
 
 	$("#players").append('<div id="mainPlayer"></div>');
@@ -103,7 +102,7 @@ function setView(index){
     });
 
     //Réactivation de la lecture
-	play_pause(true);
+	if(isPlayed)play_pause(true);
 }
 
 //Fonction de toggle des miniatures
