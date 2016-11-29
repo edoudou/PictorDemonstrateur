@@ -22,10 +22,27 @@
 					<video id="player1" src="ressources/trailer.mp4" class='player col-lg-3' poster="ressources/bunny.jpg" width="600"></video>
 					<video id="player2" src="ressources/trailer2.mp4" class='player col-lg-3' poster="ressources/bunny.jpg" width="600"></video>
 				</div>
-				<div id="Controls" class="container col-lg-9">
-					<button id='play-button' class='btn btn-default col-lg-offset-1 col-lg-4 btn-lg' title='Play' onclick="play_pause();">Play/Pause</button>
-					<button id='previous-button' class='btn btn-default col-lg-offset-1 col-lg-1 btn-lg' title='Previous' onclick="change(-1);"> < </button>
-					<button id='next-button' class='btn btn-default col-lg-1 btn-lg' title='Next' onclick="change(1);"> > </button>
+				<div id="Controls" class="navbar navbar-default navbar-embossed col-lg-offset-1 col-lg-6">
+					<ul class="nav navbar-nav navbar-left">
+						<li>
+							<a id='play-button' class='bnavbar-brand' title='Play' onclick="play_pause();">
+								<img src="ressources/play.png">
+							</a>
+						</li>
+						<li>
+							
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a id='previous-button' class='bnavbar-brand' title='Previous' onclick="change(-1);"> < </a>
+						</li>
+						<li>
+							<a id='next-button' class='bnavbar-brand' title='Next' onclick="change(1);"> > </a>
+						</li>
+					</ul>
+					<!--<a id='previous-button' class='btn btn-default col-lg-offset-1 col-lg-1 btn-lg' title='Previous' onclick="change(-1);"> < </a>
+					<a id='next-button' class='btn btn-default col-lg-1 btn-lg' title='Next' onclick="change(1);"> > </a>-->
 				</div>
 				<div class="col-lg-3">
 					<audio id="audio0" src="ressources/trailer.mp3" class='audio-player'></audio>
