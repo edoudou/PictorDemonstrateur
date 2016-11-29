@@ -30,6 +30,7 @@ $(document).ready(function(){
     //Ajustement de la position des boutons
 	$("#Controls").css('position','absolute');
 	$("#Controls").css('top',($(mainPlayer).offset().top + $(players.eq(showing)).height() - $("#Controls").height()) +'px');
+    $("#Controls").css('display','hidden');
     
     //Ajustement de l'affichage des barres de controle des volumes
     $(".volume").css('-webkit-appearance','slider-vertical');
