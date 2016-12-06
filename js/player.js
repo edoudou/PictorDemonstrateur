@@ -69,6 +69,14 @@ $(document).ready(function(){
         }
         //event.preventDefault();
     });
+    
+    $('#players').hover(function(){
+        $('#Controls').show(300);
+    },function(){
+        if(!$('#Controls').is(':hover')){
+            $('#Controls').hide(300);
+        }
+    });
 });
 
 function play_pause(forced){
@@ -139,7 +147,7 @@ function togglePreview(){
     //Sinon, dissimulation par css
 	else for (var i = 0; i < players.length; i++)players.eq(i).css('display','none');
 		
-    players.eq(showing).css('display','block');	
+    players.eq(showing).show();	
 }
 
 //Fonction d'ajustage du volume des flux audio
