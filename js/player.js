@@ -18,6 +18,10 @@ $(document).ready(function(){
 		if(!$("#preview-checkbox").is(':checked'))players.eq(i).css('display','none');
 		players.eq(i).addClass("col-lg-3");
 		players.eq(i).prop("volume",0);
+        preLoad(players.eq(i)[0].src, i);
+        players.eq(i).onwaiting =  function(){ 
+            keepSync(i);
+        };
 	}
 	showing = 0;
 
@@ -81,6 +85,10 @@ $(document).ready(function(){
 
 function play_pause(forced){
     
+    var ready = true;
+    
+    for (i = 0; i < players.length; i++)if(!checkBuffer(i))ready = false;
+    
     //Mise en pause des lecteurs
 	if(isPlayed&&!forced){
 		for (i = 0; i < players.length; i++)players.eq(i).trigger("pause");
@@ -89,7 +97,7 @@ function play_pause(forced){
 		isPlayed = false;
 	}
     //Mise en lecture des lecteurs
-	else {
+	else if(ready){
 		for (i = 0; i < players.length; i++)players.eq(i).trigger("play");
 		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("play");
 		
@@ -155,4 +163,42 @@ function updateAudio(){
     
 	$(audios.eq(0).get(0)).prop('volume',$("#volume0").val());
 	$(audios.eq(1).get(0)).prop('volume',$("#volume1").val());
+}
+
+function keepSync(id){
+    
+    for(var i=0; i<players.length; i++)if(i != id)players.eq(i).pause;
+    players.eq(id).oncanplaythrough = function(id){
+         for(var i=0; i<players.length; i++)players.eq(i).play;
+    }  
+}
+
+function checkBuffer(id){
+    res = false;
+    
+   if ((players.eq(id)[0].buffered.start(0) < 0.05)&&(players.eq(id)[0].buffered.end(0) > 0.2))res = true;
+    
+    return res;
+
+}
+
+function preLoad(source, playerId){
+    
+    console.log(source);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', source, true);
+    xhr.responseType = 'blob';
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        console.log("got it");
+        var myBlob = this.response;
+        var vid = (window.URL ? URL : URL).createObjectURL(myBlob);
+        // myBlob is now the blob that the object URL pointed to.
+        var player = players.eq(playerId);
+        console.log("Loading video into element");
+        player.src = vid;
+       }
+    }
+
+    xhr.send();
 }
