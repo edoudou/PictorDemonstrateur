@@ -4,13 +4,13 @@ var showing;
 var audios;
 
 $(document).ready(function(){
-    
+
 	isPlayed = false;
-    
+
     //Définition des ressources audios et vidéos
-    players = $('.player');	
+    players = $('.player');
 	audios = $('.audio');
-    
+
     //Initialisation de l'agencement des players et du volume des flux audios
 	players.eq(0).css('display','block;');
 	players.eq(0).get(0).volume = 0;
@@ -19,7 +19,7 @@ $(document).ready(function(){
 		players.eq(i).addClass("col-lg-3");
 		players.eq(i).prop("volume",0);
         preLoad(players.eq(i)[0].src, i);
-        players.eq(i).onwaiting =  function(){ 
+        players.eq(i).onwaiting =  function(){
             keepSync(i);
         };
 	}
@@ -27,41 +27,42 @@ $(document).ready(function(){
 
 	audios.eq(0).prop("volume",1);
 	for (var i = 1; i < audios.length; i++){
-		
+
 		audios.eq(i).prop("volume",0);
 	}
-    
+
     //Ajustement de la position des boutons
 	$("#Controls").css('position','absolute');
 	$("#Controls").css('top',($(mainPlayer).offset().top + $(players.eq(showing)).height() - $("#Controls").height()) +'px');
     $("#Controls").css('display','hidden');
-    
+
     //Ajustement de l'affichage des barres de controle des volumes
     $(".volume").css('-webkit-appearance','slider-vertical');
     $(".volume").css('width','20px');
     $(".volume").css('height',$(players.eq(showing)).height()/3 + 'px');
     $(".volume").css('margin-top',2 * $(players.eq(showing)).height()/3 +'px');
-    
+
     //Initialisation de l'event onClick sur les miniatures pour changer le flux en lecture principale
     $(".player").on("click", function(event){
         var id = $(this).attr("id").substr($(this).attr("id").length -1);
         console.log(id);
         setView(id);
-        
+
     });
-    
+
     $(document).keydown(function(event){
         switch(event.which) {
             //SpaceBar
             case 32: play_pause();
+            return false;
             break;
-            //Left  
+            //Left
             case 37: change(-1);
             break;
 
             case 38: // up
             break;
-                
+
             //Right
             case 39: change(1);
             break;
@@ -73,7 +74,7 @@ $(document).ready(function(){
         }
         //event.preventDefault();
     });
-    
+
     $('#players').hover(function(){
         $('#Controls').show(300);
     },function(){
@@ -84,30 +85,30 @@ $(document).ready(function(){
 });
 
 function play_pause(forced){
-    
+
     var ready = true;
-    
+
     for (i = 0; i < players.length; i++)if(!checkBuffer(i))ready = false;
-    
+
     //Mise en pause des lecteurs
 	if(isPlayed&&!forced){
 		for (i = 0; i < players.length; i++)players.eq(i).trigger("pause");
 		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("pause");
-        
+
 		isPlayed = false;
 	}
     //Mise en lecture des lecteurs
 	else if(ready){
 		for (i = 0; i < players.length; i++)players.eq(i).trigger("play");
 		for (var i = 0; i < audios.length; i++)audios.eq(i).trigger("play");
-		
+
 		isPlayed = true;
 	}
 }
 
 //Fonction de changement de flux vidéo par bouton < >
 function change(next){
-	
+
     //Selection du player suivant à mettre en lecture principale
 	showing = (showing + next +players.length) % players.length;
     //Appel de la fonction de changement de flux vidéo
@@ -123,7 +124,7 @@ function setView(index){
 	}
 
 	showing = index;
-    
+
     //Mise en place du lecteur principal
 	players.eq(showing).attr("class","player col-lg-12");
 	players.eq(showing).css("display","block");
@@ -135,7 +136,7 @@ function setView(index){
     //Mise en place des lecteurs miniatures
 	for (var i = 0; i < players.length; i++)
 		if(i !=showing)$("#players").append(players.eq(i));
-    
+
     //Réinitialisation de l'event onClick sur les miniatures
     $(".player").on("click", function(event){
         var id = $(this).attr("id").substr($(this).attr("id").length -1);
@@ -149,41 +150,41 @@ function setView(index){
 
 //Fonction de toggle des miniatures
 function togglePreview(){
-    
+
     //Si la checkbox est coché, affichage des miniatures
 	if($("#preview-checkbox").is(":checked"))for (var i = 0; i < players.length; i++)players.eq(i).css('display','block');
     //Sinon, dissimulation par css
 	else for (var i = 0; i < players.length; i++)players.eq(i).css('display','none');
-		
-    players.eq(showing).show();	
+
+    players.eq(showing).show();
 }
 
 //Fonction d'ajustage du volume des flux audio
 function updateAudio(){
-    
+
 	$(audios.eq(0).get(0)).prop('volume',$("#volume0").val());
 	$(audios.eq(1).get(0)).prop('volume',$("#volume1").val());
 }
 
 function keepSync(id){
-    
+
     for(var i=0; i<players.length; i++)if(i != id)players.eq(i).pause;
     players.eq(id).oncanplaythrough = function(id){
          for(var i=0; i<players.length; i++)players.eq(i).play;
-    }  
+    }
 }
 
 function checkBuffer(id){
     res = false;
-    
+
    if ((players.eq(id)[0].buffered.start(0) < 0.05)&&(players.eq(id)[0].buffered.end(0) > 0.2))res = true;
-    
+
     return res;
 
 }
 
 function preLoad(source, playerId){
-    
+
     console.log(source);
     var xhr = new XMLHttpRequest();
     xhr.open('GET', source, true);
